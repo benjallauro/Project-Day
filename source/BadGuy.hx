@@ -14,11 +14,13 @@ class BadGuy extends FlxSprite
 	{
 		super(X, Y, SimpleGraphic);
 		makeGraphic(50, 80, FlxColor.RED);
-		x = 500;
-		y = 50;
+
 		acceleration.y = 600;
 	}
-	
+	public function death()
+	{
+		kill();
+	}
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
