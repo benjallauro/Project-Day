@@ -16,9 +16,14 @@ class PlayState extends FlxState
 {
 	var zent:Player;
 	var theSky:Sky;
+	var theNight:Night;
 	//var testBadGuy:BadGuy;
 	private var tilemap:FlxTilemap;
 	private var loader:FlxOgmoLoader;
+	var dayTime:FlxTimer = new FlxTimer();
+	var incommingDarkness:FlxTimer = new FlxTimer();
+	private var cameraGuide:FlxSprite;
+	
 	
 	
 	//var aPlatform:TestPlatform;
@@ -27,6 +32,7 @@ class PlayState extends FlxState
 		super.create();
 		zent = new Player();
 		theSky = new Sky();
+		theNight = new Night();
 		
 		//testBadGuy = new BadGuy();
 		//add(testBadGuy);
@@ -43,19 +49,31 @@ class PlayState extends FlxState
 		
 		FlxG.camera.setScrollBounds(0, tilemap.width, 0, tilemap.height);
 		FlxG.worldBounds.set(0, 0, tilemap.width, tilemap.height);
+		cameraGuide = new FlxSprite(FlxG.width / 2, FlxG.height / 2);
+		cameraGuide.makeGraphic(1, 1, 0x00000000);
+		cameraGuide.velocity.x = 50;
+		FlxG.camera.follow(cameraGuide);
 		
-		FlxG.camera.follow(zent);
+		
+		Daystart();
+		
+		add(cameraGuide);
 		add(theSky);
 		add(zent);
 		add(Reg.badGuys);
 		add(tilemap);
-		
+		add(theNight);
 		
 		//aPlatform = new TestPlatform();
 		//add(aPlatform);
 		//aPlatform.immovable = true;
 	}
-	
+	private function Daystart()
+	{
+		theSky.morning();
+		dayTime.start(20, theSky.evening, 1);
+		incommingDarkness.start(30, theNight.appear, 1); //La diferencia de tiempo entre dayTime e Incoming darkness vendria a ser el atardecer.
+	}
 	private function entityCreator(entityName:String, entityData:Xml):Void
 	{
 		var entityStartX:Float = Std.parseFloat(entityData.get("x"));
@@ -94,6 +112,7 @@ class PlayState extends FlxState
 		FlxG.collide(zent, tilemap);
 		for(i in 0... Reg.badGuys.members.length)
 			FlxG.collide(Reg.badGuys.members[i], tilemap);
-		
+		if (theNight.visible == true)
+			Daystart();
 	}
 }

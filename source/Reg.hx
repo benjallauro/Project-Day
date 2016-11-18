@@ -18,5 +18,6 @@ import flixel.FlxObject;
 class Reg
 {
 	static public var badGuys:FlxTypedGroup<BadGuy>;
+	static public var zentX:Float;
 	
 }

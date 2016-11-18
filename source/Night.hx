@@ -5,25 +5,28 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 
-class Sky extends FlxSprite
+class Night extends FlxSprite
 {
-
+	var darknessHere:FlxTimer = new FlxTimer();
 	public function new(?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
 	{
 		super(X, Y, SimpleGraphic);
-		scrollFactor.set(0, 0); // No es afectado por la camara
-		
+		makeGraphic(1280, 720, FlxColor.BLACK);
+		visible = false;
+		scrollFactor.set(0, 0);
 	}
-	public function morning()
+	public function appear(Timer:FlxTimer)
 	{
-		makeGraphic(1280, 720, FlxColor.CYAN);
+		visible = true;
+		darknessHere.start(5, leave, 1);
 	}
-	public function evening(Timer:FlxTimer)
+	private function leave(Timer:FlxTimer)
 	{
-		makeGraphic(1280, 720, FlxColor.ORANGE);
+		visible = false;
 	}
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
 	}
+	
 }
