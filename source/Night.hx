@@ -18,7 +18,7 @@ class Night extends FlxSprite
 	public function appear(Timer:FlxTimer)
 	{
 		visible = true;
-		darknessHere.start(5, leave, 1);
+		darknessHere.start(2.5, leave, 1);
 	}
 	private function leave(Timer:FlxTimer)
 	{

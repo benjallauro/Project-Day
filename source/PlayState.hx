@@ -38,13 +38,24 @@ class PlayState extends FlxState
 		//add(testBadGuy);
 		
 		Reg.badGuys = new FlxTypedGroup<BadGuy>();
+		Reg.spikesGroup = new FlxTypedGroup<Spikes>();
+		Reg.springs = new FlxTypedGroup<Spring>();
 		loader = new FlxOgmoLoader(AssetPaths.Level__oel);
 		tilemap = loader.loadTilemap(AssetPaths.beastlands__png, 16, 16, "Tiles");
 		
 		tilemap.setTileProperties(0, FlxObject.NONE);
 		tilemap.setTileProperties(92, FlxObject.ANY);
 		tilemap.setTileProperties(150, FlxObject.ANY);
-		
+		tilemap.setTileProperties(1424, FlxObject.ANY);
+		tilemap.setTileProperties(1482, FlxObject.ANY);
+		tilemap.setTileProperties(1540, FlxObject.ANY);
+		tilemap.setTileProperties(1598, FlxObject.ANY);
+		//tilemap.setTileProperties(1657, FlxObject.NONE);//1 a la derecha que el de arriba.
+		//tilemap.setTileProperties(1715, FlxObject.NONE);
+		//tilemap.setTileProperties(1773, FlxObject.NONE);
+		//tilemap.setTileProperties(1831, FlxObject.NONE);
+		//tilemap.setTileProperties(1889, FlxObject.NONE);
+			
 		loader.loadEntities(entityCreator, "Entities");
 		
 		FlxG.camera.setScrollBounds(0, tilemap.width, 0, tilemap.height);
@@ -61,6 +72,8 @@ class PlayState extends FlxState
 		add(theSky);
 		add(zent);
 		add(Reg.badGuys);
+		add(Reg.spikesGroup);
+		add(Reg.springs);
 		add(tilemap);
 		add(theNight);
 		
@@ -84,6 +97,10 @@ class PlayState extends FlxState
 		{
 			case "BadGuy":
 				    Reg.badGuys.add(new BadGuy(entityStartX, entityStartY));
+			case "Spikes":
+					Reg.spikesGroup.add(new Spikes(entityStartX, entityStartY));
+			case "Spring":
+					Reg.springs.add(new Spring(entityStartX, entityStartY));
 
 		}
 
@@ -109,9 +126,29 @@ class PlayState extends FlxState
 					zent.jump2();
 			}
 		}
+		for (i in 0...Reg.spikesGroup.length)
+		{
+			if (FlxG.overlap(zent, Reg.spikesGroup.members[i])/* && Reg.spikesGroup.members[i].danger == true*/)
+			{
+				zent.damage();
+				zent.damage();
+					if (zent.x <= (Reg.spikesGroup.members[i].x + Reg.spikesGroup.members[i].width / 2))
+						zent.flinchLeft();
+					else
+						zent.flinchRight();
+				//Reg.spikesGroup.members[i].dangerOff();
+			}
+		}
+		for (i in 0...Reg.springs.length)
+		{
+			if (FlxG.overlap(zent, Reg.springs.members[i]))
+				zent.velocity.y = -700;
+		}
 		FlxG.collide(zent, tilemap);
 		for(i in 0... Reg.badGuys.members.length)
 			FlxG.collide(Reg.badGuys.members[i], tilemap);
+		for(i in 0... Reg.spikesGroup.members.length)
+			FlxG.collide(Reg.spikesGroup.members[i], tilemap);
 		if (theNight.visible == true)
 			Daystart();
 	}

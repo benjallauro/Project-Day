@@ -23,7 +23,7 @@ class Player extends FlxSprite
 		animation.add("jump", [2, 2], 5, true);
 		animation.add("walk", [3, 4], 8, true);
 
-		x = 50;
+		x = 200;
 		y = 50;
 		acceleration.y = 600;
 	}
@@ -40,6 +40,10 @@ class Player extends FlxSprite
 	public function flinchRight()
 	{
 		x += 100;
+	}
+	public function flinchUp()
+	{
+		velocity.y = -150;
 	}
 	private function death()
 	{

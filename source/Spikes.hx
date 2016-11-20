@@ -8,27 +8,23 @@ import flixel.util.FlxColor;
 import flixel.FlxObject;
 import flixel.FlxCamera;
 
-class BadGuy extends FlxSprite
+class Spikes extends FlxSprite
 {
-	
+	//public var danger:Bool = true;
 	public function new(?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
 	{
 		super(X, Y, SimpleGraphic);
-		loadGraphic(AssetPaths.theBadGuy__png, true, 50, 80);
-		animation.add("move", [0, 1], 8, true);
+		makeGraphic(50, 15, FlxColor.WHITE);
 		acceleration.y = 600;
 	}
-	public function death()
+	/*public function dangerOff()
 	{
-		kill();
-	}
+		danger = false;
+	}*/
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
-		if (isOnScreen() == true && x < Reg.zentX + 700)
-		{
-			velocity.x = -50;
-			animation.play("move");
-		}
 	}
+	
+	
 }
