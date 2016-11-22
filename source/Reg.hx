@@ -20,6 +20,7 @@ class Reg
 	static public var badGuys:FlxTypedGroup<BadGuy>;
 	static public var spikesGroup:FlxTypedGroup<Spikes>;
 	static public var springs:FlxTypedGroup<Spring>;
+	static public var clouds:FlxTypedGroup<Cloud>;
 	static public var zentX:Float;
 	
 }
