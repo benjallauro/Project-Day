@@ -14,7 +14,9 @@ class Spikes extends FlxSprite
 	public function new(?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
 	{
 		super(X, Y, SimpleGraphic);
-		makeGraphic(50, 15, FlxColor.WHITE);
+		//makeGraphic(50, 15, FlxColor.WHITE);
+		loadGraphic(AssetPaths.Spikes__png, 50, 15);
+		scale.y = 2;
 		acceleration.y = 600;
 	}
 	/*public function dangerOff()

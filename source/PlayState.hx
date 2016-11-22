@@ -1,5 +1,6 @@
 package;
 
+import flash.utils.Timer;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -11,6 +12,7 @@ import flixel.addons.editors.ogmo.FlxOgmoLoader;
 import flixel.tile.FlxTilemap;
 import flixel.FlxObject;
 import flixel.util.FlxTimer;
+import flixel.system.FlxSound;
 
 class PlayState extends FlxState
 {
@@ -23,6 +25,11 @@ class PlayState extends FlxState
 	var dayTime:FlxTimer = new FlxTimer();
 	var incommingDarkness:FlxTimer = new FlxTimer();
 	private var cameraGuide:FlxSprite;
+	var dayMusic:FlxSound;
+	var newDay:FlxTimer = new FlxTimer();
+	var musicDelay:FlxTimer = new FlxTimer();
+	var deadCamera:FlxSprite;
+	//var blackTimer:FlxTimer = new FlxTimer();
 	
 	
 	
@@ -33,6 +40,9 @@ class PlayState extends FlxState
 		zent = new Player();
 		theSky = new Sky();
 		theNight = new Night();
+		dayMusic = new FlxSound();
+		dayMusic.loadEmbedded(AssetPaths.DayTheme__wav);
+		dayMusic.volume = 0.1;
 		
 		//testBadGuy = new BadGuy();
 		//add(testBadGuy);
@@ -65,6 +75,9 @@ class PlayState extends FlxState
 		cameraGuide.velocity.x = 50;
 		FlxG.camera.follow(cameraGuide);
 		
+		deadCamera = new FlxSprite(FlxG.width / 2, FlxG.height / 2);
+		deadCamera.makeGraphic(1, 1, 0x00000000);
+		
 		
 		Daystart();
 		
@@ -85,7 +98,22 @@ class PlayState extends FlxState
 	{
 		theSky.morning();
 		dayTime.start(20, theSky.evening, 1);
+		//blackTimer.start(20, turnBlack, 1);
 		incommingDarkness.start(30, theNight.appear, 1); //La diferencia de tiempo entre dayTime e Incoming darkness vendria a ser el atardecer.
+		newDay.start(32.5, itsMorning, 1);
+		musicDelay.start(0.5, playMusic, 1);
+	}
+	//private function turnBlack(Timer:FlxTimer)
+	//{
+	//	zent.black();
+	//}
+	private function itsMorning(Timer:FlxTimer)
+	{
+		Daystart();
+	}
+	private function playMusic(Timer:FlxTimer)
+	{
+		dayMusic.play();
 	}
 	private function entityCreator(entityName:String, entityData:Xml):Void
 	{
@@ -131,25 +159,37 @@ class PlayState extends FlxState
 			if (FlxG.overlap(zent, Reg.spikesGroup.members[i])/* && Reg.spikesGroup.members[i].danger == true*/)
 			{
 				zent.damage();
-				zent.damage();
 					if (zent.x <= (Reg.spikesGroup.members[i].x + Reg.spikesGroup.members[i].width / 2))
+					{
 						zent.flinchLeft();
+						zent.flinchUp();
+					}
 					else
 						zent.flinchRight();
+						zent.flinchUp();
 				//Reg.spikesGroup.members[i].dangerOff();
 			}
 		}
 		for (i in 0...Reg.springs.length)
 		{
 			if (FlxG.overlap(zent, Reg.springs.members[i]))
+			{
 				zent.velocity.y = -700;
+				 Reg.springs.members[i].changeSprite();
+			}
 		}
 		FlxG.collide(zent, tilemap);
 		for(i in 0... Reg.badGuys.members.length)
 			FlxG.collide(Reg.badGuys.members[i], tilemap);
 		for(i in 0... Reg.spikesGroup.members.length)
 			FlxG.collide(Reg.spikesGroup.members[i], tilemap);
-		if (theNight.visible == true)
-			Daystart();
+		//if (theNight.visible == true)
+			//Daystart();
+		if (zent.y > 750 && zent.alive == true)
+		{
+			zent.fell();
+			FlxG.camera.follow(deadCamera);
+		}
+		deadCamera.x = Reg.zentX;
 	}
 }
